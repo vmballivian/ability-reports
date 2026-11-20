@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ability.ai Outbound · Weekly Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F3EC;
+    --card:#FFFFFF;
+    --ink:#1C1A16;
+    --muted:#736C60;
+    --faint:#9C948684;
+    --line:#E5DFD2;
+    --accent:#B0501F;
+    --accent-ink:#8A3D15;
+    --pos:#4C7A52;
+    --bar:#DED7C8;
+    --hold:#C9C0B0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #FBF9F4 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"Instrument Sans", -apple-system, "Segoe UI", sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding:56px 20px 80px;
+  }
+  .sheet{max-width:840px;margin:0 auto}
+
+  /* Masthead */
+  .kicker{
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:600;display:flex;align-items:center;gap:10px;
+  }
+  .kicker::before{content:"";width:26px;height:2px;background:var(--accent);display:inline-block}
+  h1{
+    font-family:"Fraunces", Georgia, serif;
+    font-weight:600;font-size:clamp(38px,7vw,60px);line-height:1.02;
+    letter-spacing:-.02em;margin:18px 0 0;
+  }
+  h1 .em{font-style:italic;font-weight:500;color:var(--accent-ink)}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:6px 26px;margin-top:20px;
+    padding-top:18px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--muted);
+  }
+  .meta b{color:var(--ink);font-weight:600}
+
+  /* Metric strip */
+  .stats{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;margin:34px 0 10px;
+  }
+  .stats.four{grid-template-columns:repeat(4,1fr);margin:0}
+  .stats.three{grid-template-columns:repeat(3,1fr);margin:14px 0 0}
+  .stat{background:var(--card);padding:20px 18px}
+  .stat .n{font-family:"Fraunces",serif;font-weight:600;font-size:34px;letter-spacing:-.02em;line-height:1}
+  .stat .n.zero{color:var(--muted)}
+  .stat .l{font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:9px}
+  .stat .sub{font-size:12px;color:var(--pos);margin-top:3px;font-weight:600}
+  .stat .sub.flat{color:var(--muted)}
+
+  /* Sections */
+  section{margin-top:44px}
+  .h{
+    font-family:"Fraunces",serif;font-size:13px;font-weight:600;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent-ink);margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .h::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .rows{display:flex;flex-direction:column;gap:2px}
+  .item{
+    display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;
+    padding:15px 0;border-bottom:1px solid var(--line);
+  }
+  .item:last-child{border-bottom:0}
+  .idx{font-family:"Fraunces",serif;font-size:15px;color:var(--accent);font-weight:600;padding-top:2px}
+  .item h3{font-size:16px;font-weight:600;letter-spacing:-.01em}
+  .item p{font-size:14.5px;color:var(--muted);margin-top:3px}
+
+  /* Segment breakdown */
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 26px 22px;
+  }
+  .segrow{display:grid;grid-template-columns:150px 1fr 84px;gap:16px;align-items:center;padding:11px 0}
+  .segrow + .segrow{border-top:1px solid var(--line)}
+  .segname{font-size:14px;font-weight:600}
+  .segname span{display:block;font-size:12px;color:var(--muted);font-weight:400}
+  .track{height:12px;background:var(--paper);border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+  .fill{height:100%;border-radius:20px}
+  .segval{text-align:right;font-family:"Fraunces",serif;font-weight:600;font-size:16px}
+  .tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:20px;display:inline-block;margin-top:4px}
+  .tag.done{background:#EAF1EA;color:var(--pos)}
+  .tag.hold{background:#F0EBE0;color:#8A7B5E}
+
+  .caption{font-size:14px;color:var(--muted);margin-top:16px}
+
+  /* Scoreboard */
+  .board h3{font-family:"Fraunces",serif;font-size:17px;font-weight:600;letter-spacing:-.01em;margin:26px 0 4px}
+  .board h3:first-of-type{margin-top:0}
+  .board p{font-size:14.5px;color:var(--muted)}
+  .board .wrap{overflow-x:auto}
+  table.scoreboard { border-collapse: collapse; width: 100%; font-size: 0.92em; margin: 0.5em 0 1.5em; }
+  table.scoreboard th, table.scoreboard td { text-align: right; padding: 0.35em 0.6em; border-bottom: 1px solid rgba(127,127,127,0.25); }
+  table.scoreboard th:first-child, table.scoreboard td:first-child { text-align: left; }
+  table.scoreboard thead th { font-weight: 600; }
+
+  /* Funnel */
+  .funnel{display:flex;flex-direction:column;gap:10px}
+  .fstep{display:grid;grid-template-columns:1fr;gap:0}
+  .fbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;border-radius:10px;color:#fff;font-weight:600;
+  }
+  .fbar .fl{font-size:13.5px;letter-spacing:.01em;opacity:.95}
+  .fbar .fn{font-family:"Fraunces",serif;font-size:20px}
+  .fstep.empty .fbar{background:var(--card);color:var(--muted);border:1px dashed var(--line)}
+
+  .note{
+    margin-top:40px;padding:18px 22px;background:#FBF3EC;border:1px solid #EAD9C8;
+    border-radius:12px;font-size:14px;color:#7A5A3E;
+  }
+  .foot{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+  @media (max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .stats.four{grid-template-columns:repeat(2,1fr)}
+    .stats.three{grid-template-columns:1fr}
+    .segrow{grid-template-columns:120px 1fr 60px}
+  }
+  @media print{
+    body{background:#fff;padding:0}
+    .panel,.stats{box-shadow:none}
+    .note{background:#f6efe8}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <div class="kicker">Ability.ai&nbsp;&nbsp;·&nbsp;&nbsp;Outbound</div>
+    <h1>Weekly activity <span class="em">report</span></h1>
+    <div class="meta">
+      <span>Week of <b>November 13 to November 19, 2026</b></span>
+      <span>Prepared by <b>Victor</b></span>
+      <span>Program <b>Full lead base, partnerships, ops hiring, account based and AI engineering</b></span>
+      <span>Cadence <b>Daily outreach</b></span>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n">3,709</div><div class="l">Leads in CRM</div></div>
+    <div class="stat"><div class="n">385</div><div class="l">Emails sent this week</div><div class="sub flat">four send days</div></div>
+    <div class="stat"><div class="n zero">0</div><div class="l">Replies logged this week</div><div class="sub flat">none of any class</div></div>
+    <div class="stat"><div class="n">135</div><div class="l">Daily capacity now</div><div class="sub flat">9 mailboxes live, 3 paused</div></div>
+    <div class="stat"><div class="n">426</div><div class="l">Awaiting reply</div></div>
+    <div class="stat"><div class="n">5,606</div><div class="l">Emails sent all time</div></div>
+  </div>
+
+  <section>
+    <div class="h">Deliverability</div>
+    <p class="caption" style="margin-top:0">Deliverability stays the measure this program answers for. The lists and the offer are still being tuned with your side, so replies read on the ICP, while whether the messages reach the inbox reads on the operation.</p>
+    <p class="caption">Inbox placement by sending domain. Two readings came in this week, both at Gmail, both on one day, Thursday 19 November, read automatically. The total number of seeds since this measurement started reads 58. Those seeds leave inside the normal daily flow, with real copy, to a monitored inbox. One seed is one mailbox, one provider, one day, so each reading is a signal and not a rate, and one day of readings is not a series. byability.com and joinabilityai.com had no seed this week, so their latest readings are still 12 November, behind 9 real sends that day, and 5 November, behind 15. Of the two read on Thursday, getabilityai.com went out behind 4 real sends on the day and byabilityai.com behind none, since that domain carries no volume at all.</p>
+    <div class="stats four">
+      <div class="stat"><div class="n">Primary</div><div class="l">getabilityai.com</div><div class="sub flat">Gmail 19 Nov · behind 4 sends</div><div class="sub flat">active · 147 sent, 38.2%, 0 bounces</div></div>
+      <div class="stat"><div class="n">Primary</div><div class="l">joinabilityai.com</div><div class="sub flat">Gmail 5 Nov · no seed this week</div><div class="sub flat">active · 142 sent, 36.9%, 2 bounces</div></div>
+      <div class="stat"><div class="n">Primary</div><div class="l">byability.com</div><div class="sub flat">Gmail 12 Nov · no seed this week</div><div class="sub flat">active · 96 sent, 24.9%, 1 bounce</div></div>
+      <div class="stat"><div class="n">Primary</div><div class="l">byabilityai.com</div><div class="sub flat">Gmail 19 Nov · behind 0 sends</div><div class="sub flat">frozen · 0 sent, 0% of volume</div></div>
+    </div>
+    <p class="caption">That table is Gmail only. No reading came in at either Microsoft filter this week, which is the second week in a row without one. The business Microsoft 365 filter, which is the one most of the firms on the current lists sit behind, therefore still rests on the readings from the end of October and the start of November, read by eye, and nothing has been added to them. The consumer outlook.com side is in the same position. That is the week's gap on this side, and it is the first item on the next seed round.</p>
+    <p class="caption">No mailbox is on a volume hold this week. The three mailboxes on byabilityai.com stay paused, with warmup running and replies to them still read. That domain has now read primary at Gmail two weeks running, but both of those seeds went out behind zero sends, so neither meets the condition set for bringing it back, which is a primary reading on a seed that sits behind live sends on the same day. The other three domains keep their ramps, which is nine mailboxes live and three out, and the daily allowance now reads 135, up from 127 a week ago.</p>
+    <div class="stats four" style="margin-top:22px">
+      <div class="stat"><div class="n">0.8%</div><div class="l">Bounce rate this week</div><div class="sub flat">3 of 385</div></div>
+      <div class="stat"><div class="n">1.3%</div><div class="l">Bounce rate all time</div><div class="sub flat">72 of 5,606</div></div>
+      <div class="stat"><div class="n">72</div><div class="l">Addresses purged</div><div class="sub flat">all time</div></div>
+      <div class="stat"><div class="n">25</div><div class="l">Dead domains dropped</div><div class="sub flat">before the send</div></div>
+    </div>
+    <p class="caption">Three bounces against 385 sent, 0.8 percent, against 1.2 percent last week. Two landed on joinabilityai.com, 2 of its 142 messages, and one on byability.com, 1 of its 96. getabilityai.com carried the largest share of the week at 147 messages and returned none. All three are counted on the rolling pool row of the scoreboard, which is where the records of the new list sit until that list has a row of its own. Those three addresses are retired, taking the purged count to 72, and the lifetime figure holds at 1.3 percent as the denominator passed 5,606. The 72 retired addresses still sit mainly in the stronger tiers, 43 in Tier 2, 22 in Tier 3, 6 in Tier 1 and 1 in Tier 4, which reflects the age of those records rather than the sending. No new dead domain turned up this week, so that count holds at 25, which is the standing request from your side to drop dead domains before the send rather than after the bounce. One note on denominators, because the scoreboard reads differently: 1.3 percent is bounces over every message ever sent, follow ups included, while the scoreboard counts bounces over first touches on each list, which is why the full lead base reads 4.8 percent there.</p>
+  </section>
+
+  <section>
+    <div class="h">Done this week</div>
+    <div class="rows">
+      <div class="item">
+        <div class="idx">01</div>
+        <div>
+          <h3>385 went out on four send days, at 73.2 percent of the allowance</h3>
+          <p>Friday 13 November 99, Monday 16 November 130, Wednesday 18 November 113 and Thursday 19 November 43. No mail went out on Tuesday 17 November. Monday's 130 is the highest single day the program has run. That is 41 fewer messages than last week on the same number of send days, and because the allowance itself moved from 127 to 135, utilisation of the allowance fell from 88.8 to 73.2 percent. Thursday's 43 is where most of the gap sits.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">02</div>
+        <div>
+          <h3>The week ran on follow ups: 11 first touches out of 385 messages</h3>
+          <p>First touches on the rolling pool row went from 1,220 to 1,231, so 11 were added, and the remaining 374 messages were second and third steps on sequences already running. 221 contacts reached the end of their sequence, 211 on the rolling pool row and 10 on partnerships wave 3b, which takes completions across the program from 1,286 to 1,507. Nothing left to send on the named waves moved, so none of the week's first touches went to partnerships, ops hiring or the account based lists.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">03</div>
+        <div>
+          <h3>305 more AI engineering records loaded, taking that list to 692</h3>
+          <p>Two further pulls came in on top of the 387 records reported last week, so the list now stands at 692 across six pulls. The base went from 3,374 to 3,709 and Tier 2 from 1,252 to 1,557, so the growth again landed in the second tier rather than at the bottom of the fit ranking. Tier 1 and Tier 3 are flat at 246 and 627 for the fourth week, and Tier 4 moved from 1,249 to 1,279. Every address went through verification before loading, and the copy for this list sits outside the existing templates, so each message is reviewed here before the day is released.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">04</div>
+        <div>
+          <h3>The positive reply rate on the rolling pool fell to 0.41 percent, and a fifth signal reads red</h3>
+          <p>It reads 0.41 percent against 0.57 percent last week with no change in the numerator: 3 positive replies, all three predating the campaign lists, now measured over 734 completed sequences rather than 523. That crossed the level set for that signal, so it joins the four removal request signals in red. The action attached to it is to stop scaling that list and change one thing before it is rerun, and that one sits with both sides.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">05</div>
+        <div>
+          <h3>Three bounces at 0.8 percent, and the addresses behind them retired</h3>
+          <p>Down from five at 1.2 percent last week. Two were on joinabilityai.com and one on byability.com, with none on getabilityai.com, which carried the most volume of the three. All three are counted on the rolling pool row, taking it from 56 to 59. The addresses are retired on detection without anything being sent to them again, which takes the lifetime purge count to 72, and domain verification keeps running before the send rather than after the bounce, with the count of dead domains dropped that way holding at 25. The lifetime rate holds at 1.3 percent.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">06</div>
+        <div>
+          <h3>Two placement readings, both primary, and no Microsoft reading for the second week</h3>
+          <p>getabilityai.com read primary at Gmail on 19 November behind 4 real sends on the day, and byabilityai.com read primary behind none. byability.com and joinabilityai.com were not seeded this week, so their readings of 12 November, behind 9 sends, and 5 November, behind 15 sends, stand. Neither Microsoft filter was read. That matters more than the Gmail readings do, because the business filter is the one most of the current lists sit behind, and it has now gone two weeks without a reading.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">07</div>
+        <div>
+          <h3>No replies of any class, for the second week running</h3>
+          <p>811 messages over the two weeks produced nothing: no positive, no neutral, no decline, no wrong person and no removal request. All time the program still reads 33 replies: 3 positive, all of them predating the campaign lists, 4 neutral, 10 declines, 3 wrong person, 8 requests to be taken out of the program and 5 that predate classification. The first two waves of the AI engineering list have now largely completed their sequences, which is what moved the completion count and the positive rate denominator this week.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="board">
+    <div class="h">Scoreboard</div>
+
+    <h3>Where each list stands</h3>
+    <p>One row per campaign and wave. Positive reply rate is positive replies over contacts who
+    completed the sequence, so a list that has just started shows a dash, not a zero.</p>
+
+    <div class="wrap">
+    <table class="scoreboard">
+      <thead>
+        <tr>
+          <th>Campaign · wave</th>
+          <th>Imported</th>
+          <th>First touches</th>
+          <th>Seq. complete</th>
+          <th>Bounce</th>
+          <th>Positive</th>
+          <th>Neutral</th>
+          <th>Negative</th>
+          <th>Wrong person</th>
+          <th>Meetings</th>
+          <th>Positive rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>partnerships · wave 1</td>
+          <td>81</td><td>81</td><td>81</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 1b</td>
+          <td>61</td><td>56</td><td>56</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 1c</td>
+          <td>89</td><td>88</td><td>87</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 2</td>
+          <td>158</td><td>156</td><td>153</td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 3</td>
+          <td>67</td><td>63</td><td>61</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 3 international</td>
+          <td>54</td><td>54</td><td>53</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 3b</td>
+          <td>18</td><td>16</td><td>16</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 4</td>
+          <td>19</td><td>19</td><td>19</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>partnerships · wave 4 international</td>
+          <td>4</td><td>4</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>ops hiring · wave 1</td>
+          <td>70</td><td>70</td><td>67</td><td>2</td><td>0</td><td>0</td><td>2</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>ops hiring · wave 1b</td>
+          <td>5</td><td>5</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>ops hiring · wave 2</td>
+          <td>91</td><td>84</td><td>83</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>ops hiring · wave 2a</td>
+          <td>41</td><td>41</td><td>40</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>wealth and insurance account based · wave 1</td>
+          <td>35</td><td>35</td><td>34</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>wealth and insurance account based · wave 2</td>
+          <td>11</td><td>11</td><td>11</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>wealth and insurance account based · wave 3</td>
+          <td>3</td><td>3</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>0.0%</td>
+        </tr>
+        <tr>
+          <td>wealth and insurance account based · users and team leads, round 1</td>
+          <td>41</td><td>27</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>wealth and insurance account based · users and team leads, round 2</td>
+          <td>9</td><td>9</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>wealth and insurance account based · users and team leads, round 3</td>
+          <td>3</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>&mdash;</td><td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>full lead base</td>
+          <td>2,849</td><td>1,231</td><td>734</td><td>59</td><td>3</td><td>1</td><td>4</td><td>2</td><td>&mdash;</td><td>0.41%</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Five signals read red this week, one more than last week. The four from last week are unchanged and at the same
+    levels: requests to be taken out of the program above the level set for that signal, with the action attached to each
+    being to pause and review copy and cadence, which sits on my side. Partnerships wave 1c reads 1.1 percent,
+    partnerships wave 2 reads 1.3 percent, partnerships wave 3 international reads 1.9 percent and ops hiring wave 2a
+    reads 2.4 percent. Each of the four rests on one or two replies, so the level is above the line while the counts
+    behind it are small, and none of them moved. The fifth is new: the positive reply rate on the full lead base reads
+    0.41 percent, below the level set for that signal, and the action attached is to stop scaling that list and change one
+    thing before it is rerun, which sits with both sides. It crossed this week on the denominator rather than on anything
+    new coming back, since 211 more contacts on that row completed their sequences against the same 3 positive replies.
+    The bounce level on that row reads 4.8 percent against 4.6 percent last week, and it rose, after two weeks of
+    falling, because only 11 first touches were added against 3 bounces. The enrichment behind the older records on that row
+    has still not been diagnosed, and that sits on your side.</p>
+
+    <p>The partnership rows now cover 551 imported and 537 first touches across nine waves, with 530 contacts through the
+    full sequence, one neutral reply, one decline, four removal requests and no positive in any wave. Ops hiring covers
+    207 imported and 200 first touches with 195 through the sequence, and the account based lists cover 102 imported and
+    88 first touches with 48 through the sequence. What is left to send is unchanged from a week ago for the third week:
+    5 first touches on partnerships wave 1b, 1 on wave 1c, 2 on wave 2, 4 on wave 3, 2 on wave 3b, 7 on ops hiring wave 2
+    and 14 on the first user and team lead round, which is 35 in total. The AI engineering list is still not in this table
+    and its 692 records are counted in the full lead base row, which is where this week's 11 first touches, 211
+    completions and 3 bounces landed. Giving it a row of its own has now been named here three weeks running and has not
+    been done.</p>
+
+    <p>Eight gates stand due, the same eight as last week, and they read the same way. Account based wave 1, due 29
+    October, reads 35 first touches with 34 through the full sequence, 1 bounce at 2.9 percent and no reply of any class.
+    Account based waves 2 and 3, due 31 October, read 11 and 3 first touches, all through the sequence, no bounces and no
+    replies. Partnerships wave 3 international, also due 31 October, reads 54 first touches with 53 complete, 1 bounce at
+    1.9 percent and one removal request. Partnerships wave 4 and wave 4 international, due 1 November, read 19 and 4
+    first touches, all complete, with no bounces and no replies. The two user and team lead rounds came due on 7 November
+    and read 9 and 3 first touches with none through the sequence, no bounces and no replies. In every case the bounce
+    threshold clears, the wrong company test has nothing to read on, and the threshold of at least one positive or
+    engaged reply does not clear.</p>
+
+    <h3>The constraint this week</h3>
+    <p><strong>Binding constraint:</strong> who is being contacted, rather than whether the message arrives. Both domains seeded this week read primary at Gmail, and the week returned no reply of any class on 385 messages.<br>
+    <strong>Evidence:</strong> 811 messages over two weeks for 0 replies, positive or otherwise. 33 replies over 5,606 messages all time, with 3 positive, all of them predating the campaign lists. The positive rate on the rolling pool fell from 0.57 to 0.41 percent purely because 211 more contacts finished their sequences without one coming back.<br>
+    <strong>Next lever:</strong> the AI engineering list, now 692 records after two more pulls, whose later waves are still mid sequence. The number that would show it worked is at least one positive reply as those waves complete, which is the threshold your side set per wave.<br>
+    <strong>If it doesn't:</strong> the list is not the constraint either, and the work moves onto the offer and the ask rather than onto sourcing or sending.</p>
+  </section>
+
+  <section>
+    <div class="h">Lead base by fit</div>
+    <div class="panel">
+      <div class="segrow">
+        <div class="segname">Tier 1<span>ideal fit</span></div>
+        <div class="track"><div class="fill" style="width:16%;background:var(--accent)"></div></div>
+        <div class="segval">246</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Tier 2<span>strong fit</span></div>
+        <div class="track"><div class="fill" style="width:100%;background:var(--accent)"></div></div>
+        <div class="segval">1,557</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Tier 3<span>moderate fit</span></div>
+        <div class="track"><div class="fill" style="width:40%;background:var(--hold)"></div></div>
+        <div class="segval">627</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Tier 4<span>low fit</span></div>
+        <div class="track"><div class="fill" style="width:82%;background:var(--hold)"></div></div>
+        <div class="segval">1,279</div>
+      </div>
+    </div>
+    <p class="caption">The base moved from 3,374 to 3,709, an addition of 335 against 166 last week. Tier 2 reads 1,557 against 1,252 and Tier 4 reads 1,279 against 1,249, while Tier 1 and Tier 3 are flat at 246 and 627 for the fourth week. Of the full base, 899 are queued, 426 are awaiting a reply, 1,823 are resting after a completed sequence and 457 are retired. Queued volume is higher than a week ago for the third week running, so the next weeks are not supply limited at the current allowance.</p>
+  </section>
+
+  <section>
+    <div class="h">Replies by outcome, all time</div>
+    <div class="panel">
+      <div class="segrow">
+        <div class="segname">Positive<span>interest expressed</span></div>
+        <div class="track"><div class="fill" style="width:30%;background:var(--accent)"></div></div>
+        <div class="segval">3</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Neutral<span>acknowledged, no signal</span></div>
+        <div class="track"><div class="fill" style="width:40%;background:var(--hold)"></div></div>
+        <div class="segval">4</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Negative<span>declined</span></div>
+        <div class="track"><div class="fill" style="width:100%;background:var(--hold)"></div></div>
+        <div class="segval">10</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Wrong person<span>routed elsewhere</span></div>
+        <div class="track"><div class="fill" style="width:30%;background:var(--hold)"></div></div>
+        <div class="segval">3</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Removal requested<span>taken out of the program</span></div>
+        <div class="track"><div class="fill" style="width:80%;background:var(--hold)"></div></div>
+        <div class="segval">8</div>
+      </div>
+      <div class="segrow">
+        <div class="segname">Unlabeled<span>predates classification</span></div>
+        <div class="track"><div class="fill" style="width:50%;background:var(--bar)"></div></div>
+        <div class="segval">5</div>
+      </div>
+    </div>
+    <p class="caption">33 replies across the life of the program and none in the last two weeks, so every row here is where it was fourteen days ago. Positive holds at 3 and all three still predate the campaign lists, so no campaign wave has produced one. Requests to be taken out of the program hold at 8, which is the only class that has consistently come back from the campaign lists and the reason four of the five red signals above read the way they do.</p>
+  </section>
+
+  <section>
+    <div class="h">Activity this week</div>
+    <div class="funnel">
+      <div class="fstep">
+        <div class="fbar" style="background:var(--ink);width:100%">
+          <span class="fl">In CRM</span><span class="fn">3,709</span>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fbar" style="background:var(--accent);width:24%">
+          <span class="fl">Contacted</span><span class="fn">385</span>
+        </div>
+      </div>
+      <div class="fstep">
+        <div class="fbar" style="background:var(--accent);width:14%">
+          <span class="fl">First touches</span><span class="fn">11</span>
+        </div>
+      </div>
+      <div class="fstep empty">
+        <div class="fbar" style="width:10%">
+          <span class="fl">Replies logged</span><span class="fn">0</span>
+        </div>
+      </div>
+      <div class="fstep empty">
+        <div class="fbar" style="width:10%">
+          <span class="fl">Bounced</span><span class="fn">3</span>
+        </div>
+      </div>
+    </div>
+    <p class="caption">385 sent at 73.2 percent utilisation of the allowance, against 88.8 percent last week on a smaller allowance. Sending ran on four days at 99, 130, 113 and 43, with no send on Tuesday 17 November. 869 records were queued a week ago and 899 are queued now, so the shortfall against the allowance was not a supply problem. 221 sequences completed, which is the largest movement in the table this week.</p>
+  </section>
+
+  <section>
+    <div class="h">Next week</div>
+    <div class="rows">
+      <div class="item">
+        <div class="idx">→</div>
+        <div>
+          <h3>Read the seed round at Gmail and at both Microsoft filters</h3>
+          <p>Two weeks have now passed with no Microsoft reading, which leaves the business filter on readings taken at the end of October and the start of November. The next round covers every domain at Gmail and both Microsoft inboxes, with the Microsoft side read by eye, folder only. byabilityai.com stays paused with warmup running and no volume on it, and its reading only counts toward coming back when it sits behind live sends on the same day.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">→</div>
+        <div>
+          <h3>Give the AI engineering list its own row in the scoreboard</h3>
+          <p>Named here for three weeks and still not done, which is why 692 records, this week's 11 first touches, 211 completions and 3 bounces are reported inside the full lead base row. Until it is split out, that list cannot be read against its own gate, and the rolling pool row cannot be read either, since movement on one is read as movement on the other. It also matters more now that the positive rate on that row reads red.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">→</div>
+        <div>
+          <h3>Run the remaining steps on the new list and clear the 35 first touches still owed</h3>
+          <p>The later waves of the AI engineering list carry the follow up volume, since the first two have largely completed. Alongside that, the 35 first touches outstanding across partnerships waves 1b, 1c, 2, 3 and 3b, ops hiring wave 2 and the first user and team lead round have not moved in three weeks and go out as the allowance permits.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="idx">→</div>
+        <div>
+          <h3>Act on the red signal that now sits with both sides</h3>
+          <p>The positive rate on the rolling pool reading 0.41 percent carries one action, which is to stop scaling that list and change one thing before it is rerun. Deciding what that one thing is needs your side as well as mine. The enrichment behind the older records on the same row is still undiagnosed after four weeks, and the eight gates standing due all turn on the same threshold and all read the same way.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    385 sent across four send days at 73.2 percent of the allowance, with three bounces at 0.8 percent and no replies of any class for the second week running: 811 messages over two weeks returned nothing. Only 11 of the week's messages were first touches, while 221 contacts reached the end of their sequence, 211 of them on the rolling pool row. That pushed the positive rate on that row from 0.57 to 0.41 percent on the same 3 positive replies, which puts a fifth signal in red, with the action being to stop scaling that list and change one thing before it is rerun. The AI engineering list took two more pulls and now stands at 692 records, with the base at 3,709 and Tier 2 at 1,557. Both domains seeded on 19 November read primary at Gmail, but neither Microsoft filter was read for the second week, so the business filter most of the lists sit behind still rests on readings from a fortnight and more ago. The 35 first touches outstanding on the named waves are unchanged for the third week.
+  </div>
+
+  <div class="foot">
+    <span><a href="../" style="color:var(--accent-ink);text-decoration:none;font-weight:600">← All reports</a>&nbsp;&nbsp;·&nbsp;&nbsp;Ability.ai · Outbound · Week 21</span>
+    <span>Next report Friday, November 27</span>
+  </div>
+
+</div>
+</body>
+</html>
