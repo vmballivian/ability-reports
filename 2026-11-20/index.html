@@ -68,6 +68,7 @@
   .stat .l{font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:9px}
   .stat .sub{font-size:12px;color:var(--pos);margin-top:3px;font-weight:600}
   .stat .sub.flat{color:var(--muted)}
+  .stat.wide{grid-column:1 / -1}
 
   /* Sections */
   section{margin-top:44px}
@@ -114,6 +115,7 @@
   table.scoreboard th, table.scoreboard td { text-align: right; padding: 0.35em 0.6em; border-bottom: 1px solid rgba(127,127,127,0.25); }
   table.scoreboard th:first-child, table.scoreboard td:first-child { text-align: left; }
   table.scoreboard thead th { font-weight: 600; }
+  table.scoreboard tfoot th { border-top: 1px solid rgba(127,127,127,0.45); }
 
   /* Funnel */
   .funnel{display:flex;flex-direction:column;gap:10px}
@@ -167,6 +169,7 @@
     <div class="stat"><div class="n">135</div><div class="l">Daily capacity now</div><div class="sub flat">9 mailboxes live, 3 paused</div></div>
     <div class="stat"><div class="n">426</div><div class="l">Awaiting reply</div></div>
     <div class="stat"><div class="n">5,606</div><div class="l">Emails sent all time</div></div>
+    <div class="stat wide"><div class="n">305</div><div class="l">People contacted on the second line this week</div><div class="sub flat">its own figure, never added to emails sent</div></div>
   </div>
 
   <section>
@@ -188,6 +191,45 @@
       <div class="stat"><div class="n">25</div><div class="l">Dead domains dropped</div><div class="sub flat">before the send</div></div>
     </div>
     <p class="caption">Three bounces against 385 sent, 0.8 percent, against 1.2 percent last week. Two landed on joinabilityai.com, 2 of its 142 messages, and one on byability.com, 1 of its 96. getabilityai.com carried the largest share of the week at 147 messages and returned none. All three are counted on the rolling pool row of the scoreboard, which is where the records of the new list sit until that list has a row of its own. Those three addresses are retired, taking the purged count to 72, and the lifetime figure holds at 1.3 percent as the denominator passed 5,606. The 72 retired addresses still sit mainly in the stronger tiers, 43 in Tier 2, 22 in Tier 3, 6 in Tier 1 and 1 in Tier 4, which reflects the age of those records rather than the sending. No new dead domain turned up this week, so that count holds at 25, which is the standing request from your side to drop dead domains before the send rather than after the bounce. One note on denominators, because the scoreboard reads differently: 1.3 percent is bounces over every message ever sent, follow ups included, while the scoreboard counts bounces over first touches on each list, which is why the full lead base reads 4.8 percent there.</p>
+  </section>
+
+  <section class="board">
+    <div class="h">Second sending line</div>
+    <p class="caption" style="margin-top:0">Since 16 November part of the volume leaves through a second sending line, with its own 12 mailboxes on 6 domains and a capacity of 360 emails a day. The stat strip and the deliverability tables above count only the first line.</p>
+
+    <div class="wrap">
+    <table class="scoreboard">
+      <thead>
+        <tr>
+          <th>Sequence</th>
+          <th>People</th>
+          <th>Contacted</th>
+          <th>Contacted this week</th>
+          <th>Bounces</th>
+          <th>Replies from a person</th>
+          <th>Automatic replies</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AI engineers wave 4</td>
+          <td>223</td><td>223</td><td>223</td><td>2</td><td>0</td><td>0</td>
+        </tr>
+        <tr>
+          <td>AI engineers wave 5</td>
+          <td>82</td><td>82</td><td>82</td><td>1</td><td>0</td><td>0</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Total</th>
+          <th>305</th><th>305</th><th>305</th><th>3</th><th>0</th><th>0</th>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+
+    <p class="caption">These figures are people contacted, not emails sent, because the second line reports totals per sequence and not sends per day. One contact answered with a notice that the person no longer works at the company, and that is not counted as a reply. No seed has run on these domains yet, so there is no inbox reading for the second line and the placement readings above do not cover it.</p>
   </section>
 
   <section>
